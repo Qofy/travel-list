@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 
 const initialItems = [
   { id: 1, description: "Passports", quantity: 2, packed: false },
@@ -8,11 +8,18 @@ const initialItems = [
 ];
 
 export default function App(){
+
+  //Uplifting
+  const [items, setItems] = useState([])
+
+  function handleAddItem(item){
+    setItems(items => [...items, item])
+  } 
   return(
   <div className="app">
     <Logo/>
-    <Form/>
-    <PackingList/>
+    <Form onAddItems = {handleAddItem}/>
+    <PackingList items={items}/>
     <Stats/>
   </div>
   )
@@ -22,7 +29,7 @@ function Logo(){
   return <h1> 🧑‍✈️ Far Away 🧳</h1>
 }
 
-function Form(){
+function Form({onAddItems}){
 
   const [description, setDescription] = useState("")
   const [quantity, setQuantity] = useState(1)
@@ -31,6 +38,8 @@ function Form(){
     e.preventDefault();//this prevent default reload which is on forms
     const newItems = {quantity, description, packed: false, id: Date.now()};
     console.log(newItems)
+
+    onAddItems(newItems)
 
     setDescription("")
     setQuantity(1)
@@ -47,11 +56,11 @@ function Form(){
   </form>
 }
 
-function PackingList(){
+function PackingList({ items }){
   return(
     <div className="list">
       <ul>
-        {initialItems.map((item) => <Item key={item.id} item={item}/>)}
+        {items.map((item) => <Item key={item.id} item={item}/>)}
       </ul>
     </div>
   )
